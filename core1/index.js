@@ -1,8 +1,8 @@
-// Проверка работы GSAP: анимация заголовка
+// Checking GASP: title animation
 
 gsap.from(".event-name", { duration: 1, opacity: 0, y: -50 });
 
- // Анимация кнопок при загрузке страницы
+ // Buttons animation
 
         gsap.from(".buttons button", {
             duration: 0.5,
@@ -11,7 +11,7 @@ gsap.from(".event-name", { duration: 1, opacity: 0, y: -50 });
             stagger: 0.2
         });
 
- // Анимация для тестирования
+ // Animation for the test
 
         document.getElementById("start").addEventListener("click", function() {
             gsap.to(".countdown", { duration: 0.5, scale: 1.2, repeat: 1, yoyo: true });
