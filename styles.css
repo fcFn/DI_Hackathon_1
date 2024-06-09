@@ -1,0 +1,47 @@
+body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background: #f0f0f0;
+  font-family: Arial, sans-serif;
+}
+
+#timer {
+  display: flex;
+  gap: 10px;
+}
+
+.time-unit {
+  background: #000;
+  color: #fff;
+  padding: 20px;
+  font-size: 2em;
+  text-align: center;
+  width: 100px;
+  position: relative;
+  overflow: hidden;
+}
+
+.number-container {
+  position: relative;
+  overflow: hidden;
+  height: 1em;
+}
+
+.time-unit .number {
+  display: block;
+  position: absolute;
+  width: 100%;
+  line-height: 1em;
+  top: 0;
+  left: 0;
+}
+
+.time-unit .label {
+  display: block;
+  margin-top: 10px;
+  font-size: 0.5em;
+  color: #fff;
+  text-align: center;
+}
