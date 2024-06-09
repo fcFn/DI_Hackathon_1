@@ -1,0 +1,51 @@
+{
+  // These tasks will run in order when initializing your CodeSandbox project.
+  "setupTasks": [
+    {
+      "name": "Install Dependencies",
+      "command": "npm install"
+    }
+  ],
+
+  // These tasks can be run from CodeSandbox. Running one will open a log in the app.
+  "tasks": {
+    "build-local": {
+      "name": "build-local",
+      "command": "npm run build-local",
+      "runAtStart": false
+    },
+    "build": {
+      "name": "build",
+      "command": "npm run build",
+      "runAtStart": false
+    },
+    "dev-local": {
+      "name": "dev-local",
+      "command": "npm run dev-local",
+      "runAtStart": false
+    },
+    "create-env": {
+      "name": "create-env",
+      "command": "npm run create-env",
+      "runAtStart": false
+    },
+    "dev": {
+      "name": "dev",
+      "command": "npm run dev",
+      "runAtStart": true,
+      "preview": {
+        "port": 1234
+      }
+    },
+    "run-env": {
+      "name": "run-env",
+      "command": "npm run run-env",
+      "runAtStart": false
+    },
+    "test": {
+      "name": "test",
+      "command": "npm run test",
+      "runAtStart": false
+    }
+  }
+}
