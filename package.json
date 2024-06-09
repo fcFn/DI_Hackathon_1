@@ -9,7 +9,7 @@
     "dev-local": "parcel index.html --public-url .",
     "create-env": "./env.sh",
     "dev": "parcel index.html",
-    "run-env": "npm run create-env && npm run dev2",
+    "run-env": "npm run create-env && npm run dev",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
