@@ -1,6 +1,6 @@
 // Import DateTime and Duration from the Luxon library
-import { DateTime } from "luxon"
-import gsap from "gsap"
+import { DateTime } from 'luxon'
+import gsap from 'gsap'
 // Get the current date and time in the local time zone
 const now = DateTime.local()
 
