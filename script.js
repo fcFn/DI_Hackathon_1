@@ -1,6 +1,8 @@
 // Import DateTime and Duration from the Luxon library
-import { DateTime } from "luxon";
 import gsap from "gsap";
+import { DateTime } from "luxon";
+import { events as builtInEvents } from "./events.js";
+import { determineCountryAndFetchHolidays } from "./geo.js";
 // Get the current date and time in the local time zone
 const now = DateTime.local();
 
@@ -20,7 +22,6 @@ function getTimeDifference(startDate, endDate) {
     "seconds",
   ]);
 
-  foo
   // Return the difference as an object
   return {
     years: diff.years,
@@ -38,11 +39,11 @@ let timeUnits;
 function createTimer() {
   // Create a new div element for the timer
   const timer = document.createElement("div");
+  const timerContainer = document.getElementById("timer-container");
   timer.id = "timer";
-
   // Set the inner HTML of the timer
   timer.innerHTML = `
-  <div id="timer">
+  
         <div class="time-unit" id="years">
             <div class="number-container">
                 <span class="number">0</span>
@@ -79,11 +80,10 @@ function createTimer() {
             </div>
             <span class="label">seconds</span>
         </div>
-    </div>
   `;
 
   // Append the timer to the body of the document
-  document.body.appendChild(timer);
+  timerContainer.appendChild(timer);
   // Define the time units for the timer
   timeUnits = {
     // Define the properties for each time unit
@@ -255,4 +255,65 @@ function onVisibilityChange() {
     // Create a new timeline for the seconds unit
     createTimeline(timeUnits.seconds, 0);
   }
+}
+
+// Get the current location and fetch events
+// Cache in localStorage
+let events = localStorage.getItem("events");
+if (!events) {
+  determineCountryAndFetchHolidays(new Date().getFullYear(), (events) => {
+    if (events) {
+      localStorage.setItem("events", JSON.stringify(events));
+    }
+  })
+    .finally(() => {
+      let events = localStorage.getItem("events");
+      if (!events) {
+        console.log("Using built-in events");
+        events = builtInEvents;
+      } else {
+        events = JSON.parse(events);
+      }
+      createOptions(events);
+    })
+    .error((error) => {
+      console.error(error);
+    });
+} else {
+  // Create a select element for the events
+  createOptions(JSON.parse(events));
+}
+
+function createOptions([events, eventsNextYear]) {
+  const select = document.createElement("select");
+  select.id = "events";
+  select.innerHTML = `<option value="">Select an event</option>`;
+  const eventsData = events;
+  eventsData.forEach((event) => {
+    // TODO: Sort options by date
+    let optionName = `${event.name} (${event.date.iso})`;
+    let date = DateTime.fromISO(`${event.date.iso}T00:00:00`);
+    if (DateTime.local() >= date) {
+      date = eventsNextYear.find(
+        (eventNextYear) => eventNextYear.name === event.name,
+      );
+      optionName = `${date.name} (${date.date.iso})`;
+      date = DateTime.fromISO(`${date.date.iso}T00:00:00`);
+    }
+
+    const option = document.createElement("option");
+    option.value = date.toISO();
+    option.textContent = optionName;
+    select.appendChild(option);
+  });
+  select.addEventListener("change", (event) => {
+    const eventDate = DateTime.fromISO(`${event.target.value}`);
+    const eventDifference = getTimeDifference(DateTime.local(), eventDate);
+    document.getElementById("timer").remove();
+    createTimer();
+    setTimeValues(eventDifference);
+    timelines.forEach((timeline) => timeline.kill());
+    createTimeline(timeUnits.seconds, 0);
+  });
+  document.body.appendChild(select);
 }

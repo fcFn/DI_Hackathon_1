@@ -4,8 +4,12 @@
   "source": "index.html",
   "description": "",
   "scripts": {
-    "build": "parcel build index.html --public-url .",
+    "build-local": "parcel build index.html --public-url .",
+    "build": "parcel build index.html",
+    "dev-local": "parcel index.html --public-url .",
+    "create-env": "./env.sh",
     "dev": "parcel index.html",
+    "run-env": "npm run create-env && npm run dev2",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
@@ -18,6 +22,7 @@
     "prettier": "^3.3.1"
   },
   "dependencies": {
+    "@parcel/watcher": "^2.4.1",
     "gsap": "^3.12.5",
     "luxon": "^3.4.4"
   }
