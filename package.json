@@ -1,0 +1,24 @@
+{
+  "name": "countdown",
+  "version": "1.0.0",
+  "source": "index.html",
+  "description": "",
+  "scripts": {
+    "build": "parcel build index.html --public-url .",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "eslint-config-standard": "^17.1.0",
+    "eslint-plugin-import": "^2.29.1",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-promise": "^6.2.0",
+    "eslint-plugin-standard": "^5.0.0",
+    "parcel": "^2.12.0"
+  },
+  "dependencies": {
+    "gsap": "^3.12.5",
+    "luxon": "^3.4.4"
+  }
+}
