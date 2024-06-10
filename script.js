@@ -112,7 +112,7 @@ function createTimer() {
     days: {
       get rollOverValue() {
         // Get the number of days in the previous month
-        return Math.floor(date.diff(DateTime.local(), ["months", "days"]).days);
+        return Math.floor(DateTime.local().minus({ month: 1 }).daysInMonth);
       },
       unit: () => document.querySelector("#days .number"),
       nextUnit: "months",
