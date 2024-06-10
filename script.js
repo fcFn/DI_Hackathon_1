@@ -3,8 +3,6 @@ import gsap from "gsap";
 import { DateTime } from "luxon";
 import { events as builtInEvents } from "./events.js";
 import { determineCountryAndFetchHolidays } from "./geo.js";
-// Get the current date and time in the local time zone
-const now = DateTime.local();
 
 // Array to store the timelines for the timer
 const timelines = [];
@@ -112,7 +110,7 @@ function createTimer() {
     days: {
       get rollOverValue() {
         // Get the number of days in the previous month
-        return Math.floor(DateTime.local().minus({ month: 1 }).daysInMonth);
+        return DateTime.local().minus({ month: 1 }).daysInMonth;
       },
       unit: () => document.querySelector("#days .number"),
       nextUnit: "months",
@@ -130,7 +128,14 @@ function createTimer() {
 }
 
 // Function to set the values of the time units
-function setTimeValues({ years = 0, months = 0, days = 0, hours = 0, minutes = 0, seconds = 0}) {
+function setTimeValues({
+  years = 0,
+  months = 0,
+  days = 0,
+  hours = 0,
+  minutes = 0,
+  seconds = 0,
+}) {
   // Set the text content of each time unit to the corresponding value in the difference object
   timeUnits.years.unit().textContent = years;
   timeUnits.months.unit().textContent = months;
@@ -225,7 +230,6 @@ function onVisibilityChange() {
   if (document.visibilityState === "visible") {
     // Kill all the timelines
     timelines.forEach((timeline) => timeline.kill());
-    
     // Update the time difference after being in background
     const difference = getTimeDifference(DateTime.local(), date);
     setupTimer(difference);
@@ -297,12 +301,12 @@ function setupTimer(eventDifference) {
     timelines.forEach((timeline) => timeline.kill());
   }
   createTimeline(timeUnits.seconds, 0);
+  document.addEventListener("visibilitychange", onVisibilityChange);
 }
-
 
 /**
  * Retrieves the event time from the query parameters in the URL. If not found
- * or not able to parse, returns an object with all properties set to 0. The 
+ * or not able to parse, returns an object with all properties set to 0. The
  * time is expected to be in milliseconds.
  * @returns {Object} An object representing the event time, with properties for
  *  years, months, days, hours, minutes, and seconds.
@@ -311,15 +315,16 @@ function getTimeFromQuery() {
   const urlParams = new URLSearchParams(window.location.search);
   const eventDate = urlParams.get("time");
   try {
-
-  if (eventDate) {
-      return getTimeDifference(DateTime.local(), DateTime.fromMillis(parseInt(eventDate)));
-    
+    if (eventDate) {
+      return getTimeDifference(
+        DateTime.local(),
+        DateTime.fromMillis(parseInt(eventDate)),
+      );
     }
   } catch (error) {
     console.error("Error parsing event time:", error);
   }
-  return { years: 0, months: 0, days: 0, hours: 0, minutes: 0, seconds: 0 };
+  return null;
 }
 
 /**
@@ -330,9 +335,18 @@ function getTimeFromQuery() {
 function addTimeToQuery(time) {
   const urlParams = new URLSearchParams(window.location.search);
   urlParams.set("time", time);
-  window.history.replaceState({}, "", `${window.location.pathname}?${urlParams}`);
+  window.history.replaceState(
+    {},
+    "",
+    `${window.location.pathname}?${urlParams}`,
+  );
 }
 
 // Entry point for the application
 const date = getTimeFromQuery();
-setupTimer(date);
+setupTimer(
+  // TODO: This should be all zeroes, but I can't figure out
+  // how to pause the timeline because 😴 (might also be because
+  // parcel is serving stale files for some reason)
+  date || { years: 0, months: 0, days: 0, hours: 0, minutes: 0, seconds: 1 },
+);
