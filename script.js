@@ -343,10 +343,9 @@ function addTimeToQuery(time) {
 }
 
 // Entry point for the application
-const date = getTimeFromQuery();
-setupTimer(
-  // TODO: This should be all zeroes, but I can't figure out
-  // how to pause the timeline because 😴 (might also be because
-  // parcel is serving stale files for some reason)
-  date || { years: 0, months: 0, days: 0, hours: 0, minutes: 0, seconds: 1 },
-);
+let date = getTimeFromQuery() || 
+// New Year's Day 2025
+// TODO: Set label of the event to the default New Year
+// TODO: Do not use hardcoded 2025
+getTimeDifference(DateTime.local(), DateTime.fromISO("2025-01-01")) 
+setupTimer(date);
