@@ -6,11 +6,11 @@ import { determineCountryAndFetchHolidays } from "./geo.js";
 // Get the current date and time in the local time zone
 const now = DateTime.local();
 
-// Create a future date by adding 2 hours and 3 seconds to the current date
-// TODO: set that from an input in the HTML
-const date = now.plus({ hours: 2, seconds: 3 });
+// Array to store the timelines for the timer
+const timelines = [];
 
 // Function to calculate the difference between two dates
+// and return it as an object with time components
 function getTimeDifference(startDate, endDate) {
   // Calculate the difference between the two dates
   const diff = endDate.diff(startDate, [
@@ -130,19 +130,15 @@ function createTimer() {
 }
 
 // Function to set the values of the time units
-function setTimeValues(difference) {
+function setTimeValues({ years = 0, months = 0, days = 0, hours = 0, minutes = 0, seconds = 0}) {
   // Set the text content of each time unit to the corresponding value in the difference object
-  timeUnits.years.unit().textContent = difference.years;
-  timeUnits.months.unit().textContent = difference.months;
-  timeUnits.days.unit().textContent = difference.days;
-  timeUnits.hours.unit().textContent = difference.hours;
-  timeUnits.minutes.unit().textContent = difference.minutes;
-  timeUnits.seconds.unit().textContent = difference.seconds.toFixed(0);
+  timeUnits.years.unit().textContent = years;
+  timeUnits.months.unit().textContent = months;
+  timeUnits.days.unit().textContent = days;
+  timeUnits.hours.unit().textContent = hours;
+  timeUnits.minutes.unit().textContent = minutes;
+  timeUnits.seconds.unit().textContent = seconds.toFixed(0);
 }
-
-// Array to store the timelines for the timer
-const timelines = [];
-
 // Function to create a timeline for a time unit
 const createTimeline = (
   { unit, rollOverValue, nextUnit, prevUnit },
@@ -217,10 +213,7 @@ const createTimeline = (
   );
 };
 
-// Calculate the difference between the current date and the future date
-const difference = getTimeDifference(now, date);
 
-setupTimer(difference);
 
 // Add an event listener for the visibilitychange event
 // When the visibility of the document changes, call the onVisibilityChange function
@@ -231,7 +224,7 @@ function onVisibilityChange() {
   // If the visibility of the document is visible, update the timer
   if (document.visibilityState === "visible") {
     // Kill all the timelines
-    timelines.forEach((timeline) => timeline.kill())
+    timelines.forEach((timeline) => timeline.kill());
     
     // Update the time difference after being in background
     const difference = getTimeDifference(DateTime.local(), date);
@@ -290,6 +283,7 @@ function createOptions([events, eventsNextYear]) {
   });
   select.addEventListener("change", (event) => {
     const eventDate = DateTime.fromISO(`${event.target.value}`);
+    addTimeToQuery(eventDate.toMillis());
     const eventDifference = getTimeDifference(DateTime.local(), eventDate);
     setupTimer(eventDifference);
   });
@@ -305,63 +299,40 @@ function setupTimer(eventDifference) {
   createTimeline(timeUnits.seconds, 0);
 }
 
-// Get the current location and fetch events
-// Cache in localStorage
-let events = localStorage.getItem("events");
-if (!events) {
-  determineCountryAndFetchHolidays(new Date().getFullYear(), (events) => {
-    if (events) {
-      localStorage.setItem("events", JSON.stringify(events));
+
+/**
+ * Retrieves the event time from the query parameters in the URL. If not found
+ * or not able to parse, returns an object with all properties set to 0. The 
+ * time is expected to be in milliseconds.
+ * @returns {Object} An object representing the event time, with properties for
+ *  years, months, days, hours, minutes, and seconds.
+ */
+function getTimeFromQuery() {
+  const urlParams = new URLSearchParams(window.location.search);
+  const eventDate = urlParams.get("time");
+  try {
+
+  if (eventDate) {
+      return getTimeDifference(DateTime.local(), DateTime.fromMillis(parseInt(eventDate)));
+    
     }
-  })
-    .finally(() => {
-      let events = localStorage.getItem("events");
-      if (!events) {
-        console.log("Using built-in events");
-        events = builtInEvents;
-      } else {
-        events = JSON.parse(events);
-      }
-      createOptions(events);
-    })
-    .error((error) => {
-      console.error(error);
-    });
-} else {
-  // Create a select element for the events
-  createOptions(JSON.parse(events));
+  } catch (error) {
+    console.error("Error parsing event time:", error);
+  }
+  return { years: 0, months: 0, days: 0, hours: 0, minutes: 0, seconds: 0 };
 }
 
-function createOptions([events, eventsNextYear]) {
-  const select = document.createElement("select");
-  select.id = "events";
-  select.innerHTML = `<option value="">Select an event</option>`;
-  const eventsData = events;
-  eventsData.forEach((event) => {
-    // TODO: Sort options by date
-    let optionName = `${event.name} (${event.date.iso})`;
-    let date = DateTime.fromISO(`${event.date.iso}T00:00:00`);
-    if (DateTime.local() >= date) {
-      date = eventsNextYear.find(
-        (eventNextYear) => eventNextYear.name === event.name,
-      );
-      optionName = `${date.name} (${date.date.iso})`;
-      date = DateTime.fromISO(`${date.date.iso}T00:00:00`);
-    }
-
-    const option = document.createElement("option");
-    option.value = date.toISO();
-    option.textContent = optionName;
-    select.appendChild(option);
-  });
-  select.addEventListener("change", (event) => {
-    const eventDate = DateTime.fromISO(`${event.target.value}`);
-    const eventDifference = getTimeDifference(DateTime.local(), eventDate);
-    document.getElementById("timer").remove();
-    createTimer();
-    setTimeValues(eventDifference);
-    timelines.forEach((timeline) => timeline.kill());
-    createTimeline(timeUnits.seconds, 0);
-  });
-  document.body.appendChild(select);
+/**
+ * Adds the specified time to the query string of the current URL.
+ * @param {string} time - The time to be added to the query string, 
+ *  in milliseconds.
+ */
+function addTimeToQuery(time) {
+  const urlParams = new URLSearchParams(window.location.search);
+  urlParams.set("time", time);
+  window.history.replaceState({}, "", `${window.location.pathname}?${urlParams}`);
 }
+
+// Entry point for the application
+const date = getTimeFromQuery();
+setupTimer(date);
