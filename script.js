@@ -231,7 +231,7 @@ function onVisibilityChange() {
     // Kill all the timelines
     timelines.forEach((timeline) => timeline.kill());
     // Update the time difference after being in background
-    const difference = getTimeDifference(DateTime.local(), date);
+    const difference = date
     setupTimer(difference);
   }
 }
