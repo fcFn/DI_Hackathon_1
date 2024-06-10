@@ -258,7 +258,7 @@ if (!events) {
       }
       createOptions(events);
     })
-    .error((error) => {
+    .catch((error) => {
       console.error(error);
     });
 } else {
