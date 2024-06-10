@@ -220,14 +220,7 @@ const createTimeline = (
 // Calculate the difference between the current date and the future date
 const difference = getTimeDifference(now, date);
 
-// Create the timer
-createTimer();
-
-// Set the values of the time units
-setTimeValues(difference);
-
-// Create a timeline for the seconds unit
-createTimeline(timeUnits.seconds, 0);
+setupTimer(difference);
 
 // Add an event listener for the visibilitychange event
 // When the visibility of the document changes, call the onVisibilityChange function
@@ -238,23 +231,78 @@ function onVisibilityChange() {
   // If the visibility of the document is visible, update the timer
   if (document.visibilityState === "visible") {
     // Kill all the timelines
-    timelines.forEach((timeline) => timeline.kill());
-
-    // Remove the timer from the DOM
-    document.getElementById("timer").remove();
-
-    // Create a new timer
-    createTimer();
-
+    timelines.forEach((timeline) => timeline.kill())
+    
     // Update the time difference after being in background
     const difference = getTimeDifference(DateTime.local(), date);
-
-    // Set the values of the time units
-    setTimeValues(difference);
-
-    // Create a new timeline for the seconds unit
-    createTimeline(timeUnits.seconds, 0);
+    setupTimer(difference);
   }
+}
+
+// Get the current location and fetch events
+// Cache in localStorage
+let events = localStorage.getItem("events");
+if (!events) {
+  determineCountryAndFetchHolidays(new Date().getFullYear(), (events) => {
+    if (events) {
+      localStorage.setItem("events", JSON.stringify(events));
+    }
+  })
+    .finally(() => {
+      let events = localStorage.getItem("events");
+      if (!events) {
+        console.log("Using built-in events");
+        events = builtInEvents;
+      } else {
+        events = JSON.parse(events);
+      }
+      createOptions(events);
+    })
+    .error((error) => {
+      console.error(error);
+    });
+} else {
+  // Create a select element for the events
+  createOptions(JSON.parse(events));
+}
+
+function createOptions([events, eventsNextYear]) {
+  const select = document.createElement("select");
+  select.id = "events";
+  select.innerHTML = `<option value="">Select an event</option>`;
+  const eventsData = events;
+  eventsData.forEach((event) => {
+    // TODO: Sort options by date
+    let optionName = `${event.name} (${event.date.iso})`;
+    let date = DateTime.fromISO(`${event.date.iso}T00:00:00`);
+    if (DateTime.local() >= date) {
+      date = eventsNextYear.find(
+        (eventNextYear) => eventNextYear.name === event.name,
+      );
+      optionName = `${date.name} (${date.date.iso})`;
+      date = DateTime.fromISO(`${date.date.iso}T00:00:00`);
+    }
+
+    const option = document.createElement("option");
+    option.value = date.toISO();
+    option.textContent = optionName;
+    select.appendChild(option);
+  });
+  select.addEventListener("change", (event) => {
+    const eventDate = DateTime.fromISO(`${event.target.value}`);
+    const eventDifference = getTimeDifference(DateTime.local(), eventDate);
+    setupTimer(eventDifference);
+  });
+  document.body.appendChild(select);
+}
+function setupTimer(eventDifference) {
+  document.getElementById("timer")?.remove();
+  createTimer();
+  setTimeValues(eventDifference);
+  if (timelines.length) {
+    timelines.forEach((timeline) => timeline.kill());
+  }
+  createTimeline(timeUnits.seconds, 0);
 }
 
 // Get the current location and fetch events
