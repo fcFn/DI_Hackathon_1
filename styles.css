@@ -20,13 +20,13 @@
   text-align: center;
   width: 100px;
   position: relative;
-  overflow: hidden;
 }
 
 .number-container {
+  perspective: 1000px;
   position: relative;
-  overflow: hidden;
   height: 1em;
+  overflow: hidden;
 }
 
 .time-unit .number {
@@ -36,6 +36,7 @@
   line-height: 1em;
   top: 0;
   left: 0;
+  backface-visibility: hidden;
 }
 
 .time-unit .label {
