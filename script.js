@@ -163,9 +163,6 @@ const createTimeline = (
   // If the value of the target element is 0, set the text content of the new element to the rollOverValue
   newElement.textContent = value - 1 >= 0 ? value - 1 : rollOverValue;
 
-  // Set the transform property of the new element to translateY(-100%)
-  newElement.style.transform = "translateY(-100%)";
-
   // Append the new element to the parent of the target element
   target.parentNode.appendChild(newElement);
 
@@ -213,12 +210,22 @@ const createTimeline = (
   // Add the timeline to the timelines array
   timelines.push(
     timeline
-      .to(target, { duration: 0.5, y: "100%", ease: "none" })
-      .to(newElement, { duration: 0.5, y: "0%", ease: "none" }, "<"),
+      // .timeScale(0.4)
+      .set(target, { transformOrigin: "center bottom" })
+      .set(newElement, { transformOrigin: "center top" })
+      .fromTo(
+        target,
+        { rotationX: 0 },
+        { duration: 0.5, rotationX: -150, y: "100%", ease: "none" },
+      )
+      .fromTo(
+        newElement,
+        { y: "-100%", rotationX: 150 },
+        { duration: 0.5, y: "0%", rotationX: 0, ease: "none" },
+        "<",
+      ),
   );
 };
-
-
 
 // Add an event listener for the visibilitychange event
 // When the visibility of the document changes, call the onVisibilityChange function
@@ -231,7 +238,7 @@ function onVisibilityChange() {
     // Kill all the timelines
     timelines.forEach((timeline) => timeline.kill());
     // Update the time difference after being in background
-    const difference = date
+    const difference = date;
     setupTimer(difference);
   }
 }
@@ -271,6 +278,7 @@ function createOptions([events, eventsNextYear]) {
   eventsData.forEach((event) => {
     // TODO: Sort options by date
     let optionName = `${event.name} (${event.date.iso})`;
+    // TODO: We should probably subtract 1 second from the date
     let date = DateTime.fromISO(`${event.date.iso}T00:00:00`);
     if (DateTime.local() >= date) {
       date = eventsNextYear.find(
@@ -329,7 +337,7 @@ function getTimeFromQuery() {
 
 /**
  * Adds the specified time to the query string of the current URL.
- * @param {string} time - The time to be added to the query string, 
+ * @param {string} time - The time to be added to the query string,
  *  in milliseconds.
  */
 function addTimeToQuery(time) {
@@ -343,9 +351,10 @@ function addTimeToQuery(time) {
 }
 
 // Entry point for the application
-let date = getTimeFromQuery() || 
-// New Year's Day 2025
-// TODO: Set label of the event to the default New Year
-// TODO: Do not use hardcoded 2025
-getTimeDifference(DateTime.local(), DateTime.fromISO("2025-01-01")) 
+let date =
+  getTimeFromQuery() ||
+  // New Year's Day 2025
+  // TODO: Set label of the event to the default New Year
+  // TODO: Do not use hardcoded 2025
+  getTimeDifference(DateTime.local(), DateTime.fromISO("2025-01-01"));
 setupTimer(date);
