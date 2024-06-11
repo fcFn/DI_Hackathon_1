@@ -8,6 +8,23 @@
   </head>
   <body>
     <div id="timer-container"></div>
+
+      <button class="share-button" id="shareButton">Share</button>
+    </div>
+    <div class="event-title"></div>
+
+    </div>
+    <div class="form-container">
+      <form id="eventForm">
+        <!-- <h3>Set new Event</h3> -->
+        <label for="eventNameInput">Event Name:</label>
+        <input type="text" id="eventNameInput" required>
+        <label for="eventDateInput">Event Date:</label>
+        <input type="datetime-local" id="eventDateInput" required>
+        <button type="submit">Submit Event</button>
+      </form>
+    </div>
+    <button id="darkModeToggle">Toggle Dark Mode</button>
     <script type="module" src="script.js"></script>
   </body>
 </html>

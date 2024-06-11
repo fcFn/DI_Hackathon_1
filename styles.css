@@ -20,13 +20,13 @@
   text-align: center;
   width: 100px;
   position: relative;
-  overflow: hidden;
 }
 
 .number-container {
+  perspective: 1000px;
   position: relative;
-  overflow: hidden;
   height: 1em;
+  overflow: hidden;
 }
 
 .time-unit .number {
@@ -36,6 +36,7 @@
   line-height: 1em;
   top: 0;
   left: 0;
+  backface-visibility: hidden;
 }
 
 .time-unit .label {
@@ -44,4 +45,117 @@
   font-size: 0.5em;
   color: #fff;
   text-align: center;
+}
+
+/* Form */
+.form-container {
+  margin-top: 30px
+}
+form {
+  padding: 20px;
+  background-color: #fff;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  width: 300px;
+  display: flex;
+  flex-direction: column;
+}
+
+form h3 {
+  margin-top: 0;
+  font-size: 1.5em;
+  color: #333;
+  margin-bottom: 10px;
+}
+
+form label {
+  font-weight: bold;
+  margin-bottom: 5px;
+  color: #333;
+}
+
+form input[type="text"],
+form input[type="datetime-local"],
+form button {
+  padding: 10px;
+  font-size: 1em;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+form input[type="datetime-local"] {
+  margin-bottom: 10px;
+}
+
+form button {
+  background-color: #00aaff;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+form button:hover {
+  background-color: #0088cc;
+}
+
+#darkModeToggle {
+  position: absolute;
+  bottom: 10px;
+  right: 20px;
+}
+
+
+/* dark mode */
+
+
+/* body darl elements */
+.dark-mode-body, .dark-mode-navbar, .dark-mode-time-unit   {
+  transition: 0.5s;
+}
+.dark-mode-body {
+  background-color: grey;
+}
+
+/* nav bar dark elements */
+
+.dark-mode-navbar {
+  background-color: black;
+  color: white;
+}
+
+.dark-mode-navbar .nav-links a {
+  color: white;
+}
+.dark-mode-navbar .nav-links a:hover {
+  background-color: grey;
+}
+
+.dark-mode-body .share-button {
+  background-color: grey;
+}
+.dark-mode-body .share-button:hover {
+  background-color: rgb(85, 84, 84);
+}
+/* timer dark elements */
+
+.dark-mode-time-unit {
+  background-color: black;
+}
+
+
+/* form dark elements */
+
+.dark-mode-form {
+  background-color: rgb(195, 192, 192);
+}
+
+.dark-mode-form > button {
+  background-color: black;
+}
+
+/* button to change themes */
+
+.dark-mode-body #darkModeToggle {
+  background-color: black;
 }

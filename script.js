@@ -30,7 +30,6 @@ function getTimeDifference(startDate, endDate) {
     seconds: diff.seconds,
   };
 }
-
 let timeUnits;
 
 // Function to create a timer
@@ -155,7 +154,6 @@ const createTimeline = (
 
   // Get the current value of the target element
   const value = parseInt(target.textContent);
-
   // Create a new element with the same content as the target element
   const newElement = target.cloneNode(true);
 
@@ -163,13 +161,10 @@ const createTimeline = (
   // If the value of the target element is 0, set the text content of the new element to the rollOverValue
   newElement.textContent = value - 1 >= 0 ? value - 1 : rollOverValue;
 
-  // Set the transform property of the new element to translateY(-100%)
-  newElement.style.transform = "translateY(-100%)";
-
   // Append the new element to the parent of the target element
   target.parentNode.appendChild(newElement);
 
-  // Create a new timeline with the specified delay
+   // Create a new timeline with the specified delay
   const timeline = gsap.timeline({
     delay,
     onComplete() {
@@ -198,7 +193,7 @@ const createTimeline = (
         );
       }
 
-      // Remove the target element from the DOM
+       // Remove the target element from the DOM
       target.remove();
     },
     onStart() {
@@ -213,12 +208,22 @@ const createTimeline = (
   // Add the timeline to the timelines array
   timelines.push(
     timeline
-      .to(target, { duration: 0.5, y: "100%", ease: "none" })
-      .to(newElement, { duration: 0.5, y: "0%", ease: "none" }, "<"),
+      // .timeScale(0.4)
+      .set(target, { transformOrigin: "center bottom" })
+      .set(newElement, { transformOrigin: "center top" })
+      .fromTo(
+        target,
+        { rotationX: 0 },
+        { duration: 0.5, rotationX: -150, y: "100%", ease: "none" },
+      )
+      .fromTo(
+        newElement,
+        { y: "-100%", rotationX: 150 },
+        { duration: 0.5, y: "0%", rotationX: 0, ease: "none" },
+        "<",
+      ),
   );
 };
-
-
 
 // Add an event listener for the visibilitychange event
 // When the visibility of the document changes, call the onVisibilityChange function
@@ -329,7 +334,7 @@ function getTimeFromQuery() {
 
 /**
  * Adds the specified time to the query string of the current URL.
- * @param {string} time - The time to be added to the query string, 
+ * @param {string} time - The time to be added to the query string,
  *  in milliseconds.
  */
 function addTimeToQuery(time) {
@@ -343,9 +348,24 @@ function addTimeToQuery(time) {
 }
 
 // Entry point for the application
-let date = getTimeFromQuery() || 
-// New Year's Day 2025
-// TODO: Set label of the event to the default New Year
-// TODO: Do not use hardcoded 2025
-getTimeDifference(DateTime.local(), DateTime.fromISO("2025-01-01")) 
+let date =
+  getTimeFromQuery() ||
+  // New Year's Day 2025
+  // TODO: Set label of the event to the default New Year
+  // TODO: Do not use hardcoded 2025
+  getTimeDifference(DateTime.local(), DateTime.fromISO("2025-01-01"));
 setupTimer(date);
+
+
+document.getElementById('darkModeToggle').addEventListener('click', () => {
+  
+  document.body.classList.toggle('dark-mode-body')
+
+  
+  const timeUnits = document.querySelectorAll(".time-unit");
+  timeUnits.forEach(unit => {
+    unit.classList.toggle('dark-mode-time-unit');
+  });
+
+  document.getElementById("eventForm").classList.toggle('dark-mode-form');
+});
