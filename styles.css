@@ -230,9 +230,16 @@ select:hover {
   background-color: rgb(85, 84, 84);
 }
 
+/* Select Button */
+
 .dark-mode-body  select {
   background-color: black;
 }
+
+.dark-mode-body #timer {
+  background-color: grey;
+}
+
 /* timer dark elements */
 
 .dark-mode-time-unit {
@@ -254,4 +261,41 @@ select:hover {
 
 .dark-mode-body #darkModeToggle {
   background-color: black;
+}
+
+@media only screen and (max-width: 980px) {
+  .time-unit {
+    width: 70px;
+   
+  }
+  
+}
+
+
+@media only screen and (max-width: 750px) {
+  .time-unit {
+    flex: 1 1 calc(30% - 10px); /* Задает ширину каждого блока, учитывая отступ */
+    margin-bottom: 10px; /* Отступ между строками */
+    box-sizing: border-box; /* Включает паддинги и бордеры в размер блока */
+    text-align: center; /* Центрирует текст внутри блоков */
+    padding: 20px 10px; /* Внутренний отступ */
+  }
+
+  .navbar .nav-links a {
+    font-size: 12px;
+    padding: 10px 15px;
+  }
+  
+  .navbar .share-button {
+    padding: 7px 15px;
+    font-size: 12px;
+    margin-right: 20px;
+  }
+
+  /* Select button */
+
+  select #darkModeToggle{
+    padding: 7px 0 7px 0;
+    width: 150px;
+  }
 }
