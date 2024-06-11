@@ -386,7 +386,7 @@ document.getElementById("eventForm").addEventListener("submit", (event) => {
   const eventDate = document.getElementById("eventDateInput").value;
   setEventName(eventName);
   setDateFromForm(eventDate);
-  document.getElementById("eventName").value = "";
+  document.getElementById("eventNameInput").value = "";
 });
 
 // This is probably not the best way to do that, instead better stick with the add
