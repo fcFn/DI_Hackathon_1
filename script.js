@@ -3,13 +3,14 @@ import gsap from "gsap";
 import { DateTime } from "luxon";
 import { events as builtInEvents } from "./events.js";
 import { determineCountryAndFetchHolidays } from "./geo.js";
+import { startBGTimer } from "./worker-helper.js";
 
 // Array to store the timelines for the timer
 const timelines = [];
 
 // Function to calculate the difference between two dates
 // and return it as an object with time components
-function getTimeDifference(startDate, endDate) {
+export function getTimeDifference(startDate, endDate) {
   // Calculate the difference between the two dates
   const diff = endDate.diff(startDate, [
     "years",
@@ -168,11 +169,7 @@ const createTimeline = (
   const timeline = gsap.timeline({
     delay,
     onComplete() {
-      // Stop the timer if the target date has been reached
-      if (DateTime.local().plus({ seconds: 1 }) >= date) {
-        document.removeEventListener("visibilitychange", onVisibilityChange);
-        gsap.globalTimeline.pause();
-      }
+      
 
       // Check if the previous unit has reached its rollOverValue
       // so that next unit only rolls over once per previous unit max value
@@ -197,6 +194,18 @@ const createTimeline = (
       target.remove();
     },
     onStart() {
+      // Stop the timer if the target date has been reached
+      if (
+        timeUnits.years.unit().textContent === "0" &&
+        timeUnits.months.unit().textContent === "0" &&
+        timeUnits.days.unit().textContent === "0" &&
+        timeUnits.hours.unit().textContent === "0" &&
+        timeUnits.minutes.unit().textContent === "0" &&
+        timeUnits.seconds.unit().textContent === "0" 
+      ) {
+        document.removeEventListener("visibilitychange", onVisibilityChange);
+        return gsap.globalTimeline.pause();
+      }
       // If the value of the target element is 0 and there is a next unit, create a new timeline for the next unit
       // But run the timeline only once since we only need it to do at most every 60 seconds
       if (value <= 0 && nextUnit) {
@@ -230,7 +239,7 @@ const createTimeline = (
 document.addEventListener("visibilitychange", onVisibilityChange);
 
 // Function to handle the visibilitychange event
-function onVisibilityChange() {
+function onVisibilityChange(eventDifference) {
   // If the visibility of the document is visible, update the timer
   if (document.visibilityState === "visible") {
     // Kill all the timelines
@@ -276,6 +285,7 @@ function createOptions([events, eventsNextYear]) {
   eventsData.forEach((event) => {
     // TODO: Sort options by date
     let optionName = `${event.name} (${event.date.iso})`;
+    // TODO: We should probably subtract 1 second from the date
     let date = DateTime.fromISO(`${event.date.iso}T00:00:00`);
     if (DateTime.local() >= date) {
       date = eventsNextYear.find(
@@ -295,17 +305,19 @@ function createOptions([events, eventsNextYear]) {
     addTimeToQuery(eventDate.toMillis());
     const eventDifference = getTimeDifference(DateTime.local(), eventDate);
     setupTimer(eventDifference);
+    startBGTimer(eventDate.toMillis());
   });
   document.body.appendChild(select);
 }
 function setupTimer(eventDifference) {
-  date = eventDifference
+  date = eventDifference;
   document.getElementById("timer")?.remove();
   createTimer();
   setTimeValues(eventDifference);
   if (timelines.length) {
     timelines.forEach((timeline) => timeline.kill());
   }
+  gsap.globalTimeline.resume();
   createTimeline(timeUnits.seconds, 0);
   document.addEventListener("visibilitychange", onVisibilityChange);
 }
@@ -348,15 +360,6 @@ function addTimeToQuery(time) {
   );
 }
 
-// Entry point for the application
-let date =
-  getTimeFromQuery() ||
-  // New Year's Day 2025
-  // TODO: Set label of the event to the default New Year
-  // TODO: Do not use hardcoded 2025
-  getTimeDifference(DateTime.local(), DateTime.fromISO("2025-01-01"));
-setupTimer(date);
-
 document.getElementById("darkModeToggle").addEventListener("click", () => {
   document.body.classList.toggle("dark-mode-body");
 
@@ -378,8 +381,8 @@ function setDateFromForm(date) {
   addTimeToQuery(eventDate.toMillis());
   const eventDifference = getTimeDifference(DateTime.local(), eventDate);
   setupTimer(eventDifference);
+  startBGTimer(eventDate.toMillis());
 }
-
 
 document.getElementById("eventForm").addEventListener("submit", (event) => {
   event.preventDefault();
@@ -405,6 +408,26 @@ window.shareEvent = () => {
   } else {
     console.error("Web Share API not supported");
   }
+};
+
+function getMillisFromURL() {
+  const urlParams = new URLSearchParams(window.location.search);
+  const eventDate = urlParams.get("time");
+  if (!eventDate) {
+    return /* time to new year 2025 in milliseconds */ 1735689600000;
+  }
+  return eventDate;
 }
 
 //hello
+// Entry point for the application
+Notification.requestPermission();
+let date =
+  getTimeFromQuery() ||
+  // New Year's Day 2025
+  // TODO: Set label of the event to the default New Year
+  // TODO: Do not use hardcoded 2025
+  getTimeDifference(DateTime.local(), DateTime.fromISO("2025-01-01"));
+
+startBGTimer(getMillisFromURL());
+setupTimer(date);
