@@ -6,7 +6,6 @@ import { determineCountryAndFetchHolidays } from "./geo.js";
 
 // Array to store the timelines for the timer
 const timelines = [];
-
 // Function to calculate the difference between two dates
 // and return it as an object with time components
 function getTimeDifference(startDate, endDate) {
@@ -386,24 +385,58 @@ document.getElementById("eventForm").addEventListener("submit", (event) => {
   const eventDate = document.getElementById("eventDateInput").value;
   setEventName(eventName);
   setDateFromForm(eventDate);
-  document.getElementById("eventName").value = "";
+  document.querySelector(".event-title").value = "";
 });
 
 // This is probably not the best way to do that, instead better stick with the add
 // event listener method
-window.shareEvent = () => {
-  const url = window.location.href;
-  const shareData = {
-    title: "Event Countdown",
-    text: "Check out this event countdown!",
-    url: url,
-  };
+// window.shareEvent = () => {
+//   const url = window.location.href;
+//   const shareData = {
+//     title: "Event Countdown",
+//     text: "Check out this event countdown!",
+//     url: url,
+//   };
 
-  if (navigator.share) {
-    navigator.share(shareData);
-  } else {
-    console.error("Web Share API not supported");
+//   if (navigator.share) {
+//     navigator.share(shareData);
+//   } else {
+//     console.error("Web Share API not supported");
+//   }
+// }
+
+
+function shareCurrentURL() {
+  const eventDateInput = document.getElementById("eventDateInput").value;
+  const eventDate = new Date(eventDateInput);
+
+  if (isNaN(eventDate.getTime())) { // date validation
+    alert('Invalid date. Please enter a valid date.');
+    return '';
   }
+
+  const nameElement = document.querySelector(".event-title");
+  const name = nameElement ? nameElement.textContent.trim() : '';
+
+  if (!name) {
+    alert('Event name is missing.');
+    return '';
+  }
+
+  const time = eventDate.toISOString();
+  const url = `${window.location.origin}${window.location.pathname}?name=${encodeURIComponent(name)}&time=${encodeURIComponent(time)}`;
+  return url;
 }
 
-//hello
+document.getElementById("shareButton").addEventListener("click", (event) => {
+  event.preventDefault();
+
+  const shareURL = shareCurrentURL();
+  if (shareURL) { // Check if empety
+    navigator.clipboard.writeText(shareURL).then(() => {
+      alert(`For the event: ${document.querySelector(".event-title").textContent}, linked was copied: ` + shareURL);
+    }).catch(err => {
+      console.error('Was not able to copy the link', err);
+    });
+  }
+});
