@@ -164,7 +164,7 @@ const createTimeline = (
   // Append the new element to the parent of the target element
   target.parentNode.appendChild(newElement);
 
-   // Create a new timeline with the specified delay
+  // Create a new timeline with the specified delay
   const timeline = gsap.timeline({
     delay,
     onComplete() {
@@ -193,7 +193,7 @@ const createTimeline = (
         );
       }
 
-       // Remove the target element from the DOM
+      // Remove the target element from the DOM
       target.remove();
     },
     onStart() {
@@ -236,7 +236,7 @@ function onVisibilityChange() {
     // Kill all the timelines
     timelines.forEach((timeline) => timeline.kill());
     // Update the time difference after being in background
-    const difference = date
+    const difference = date;
     setupTimer(difference);
   }
 }
@@ -356,16 +356,53 @@ let date =
   getTimeDifference(DateTime.local(), DateTime.fromISO("2025-01-01"));
 setupTimer(date);
 
+document.getElementById("darkModeToggle").addEventListener("click", () => {
+  document.body.classList.toggle("dark-mode-body");
 
-document.getElementById('darkModeToggle').addEventListener('click', () => {
-  
-  document.body.classList.toggle('dark-mode-body')
-
-  
   const timeUnits = document.querySelectorAll(".time-unit");
-  timeUnits.forEach(unit => {
-    unit.classList.toggle('dark-mode-time-unit');
+  timeUnits.forEach((unit) => {
+    unit.classList.toggle("dark-mode-time-unit");
   });
 
-  document.getElementById("eventForm").classList.toggle('dark-mode-form');
+  document.getElementById("eventForm").classList.toggle("dark-mode-form");
 });
+
+function setEventName(eventName) {
+  const eventTitle = document.querySelector(".event-title");
+  eventTitle.textContent = eventName;
+}
+
+function setDateFromForm(date) {
+  const eventDate = DateTime.fromISO(date);
+  addTimeToQuery(eventDate.toMillis());
+  const eventDifference = getTimeDifference(DateTime.local(), eventDate);
+  setupTimer(eventDifference);
+}
+
+
+document.getElementById("eventForm").addEventListener("submit", (event) => {
+  event.preventDefault();
+  const eventName = document.getElementById("eventNameInput").value;
+  const eventDate = document.getElementById("eventDateInput").value;
+  setEventName(eventName);
+  setDateFromForm(eventDate);
+  document.getElementById("eventName").value = "";
+});
+
+// This is probably not the best way to do that, instead better stick with the add
+// event listener method
+window.shareEvent = () => {
+  const url = window.location.href;
+  const shareData = {
+    title: "Event Countdown",
+    text: "Check out this event countdown!",
+    url: url,
+  };
+
+  if (navigator.share) {
+    navigator.share(shareData);
+  } else {
+    console.error("Web Share API not supported");
+  }
+}
+
