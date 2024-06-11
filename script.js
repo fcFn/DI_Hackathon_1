@@ -299,6 +299,7 @@ function createOptions([events, eventsNextYear]) {
   document.body.appendChild(select);
 }
 function setupTimer(eventDifference) {
+  date = eventDifference
   document.getElementById("timer")?.remove();
   createTimer();
   setTimeValues(eventDifference);
