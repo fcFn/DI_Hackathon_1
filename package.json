@@ -8,7 +8,7 @@
     "build": "parcel build index.html",
     "dev-local": "parcel index.html --public-url .",
     "create-env": "./env.sh",
-    "dev": "parcel index.html",
+    "dev": "rm -rf .parcel-cache && parcel index.html --no-cache",
     "run-env": "npm run create-env && npm run dev",
     "test": "echo \"Error: no test specified\" && exit 1"
   },

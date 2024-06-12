@@ -1,3 +1,42 @@
+/* Body */
+
+body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  background: #f0f0f0;
+  font-family: Arial, sans-serif;
+}
+
+.share-button {
+  color: #fff;
+  cursor: pointer;
+  background-color: #007bff;
+  border: none;
+  border-radius: 5px;
+  margin-left: auto;
+  padding: 10px 20px;
+  font-size: 1em;
+  width: max-content;
+  display: block;
+  margin-top: 10px;
+}
+
+.share-button:hover {
+  background-color: #0088cc;
+}
+
+/* Event Title */
+
+.event-title {
+  font-size: 36px;
+  padding-bottom: 20px;
+  color: black;
+}
+
+/* Timer */
+
 #timer-container {
   display: flex;
   justify-content: center;
@@ -13,7 +52,7 @@
 }
 
 .time-unit {
-  background: #000;
+  background: #007bff;
   color: #fff;
   padding: 20px;
   font-size: 2em;
@@ -49,7 +88,7 @@
 
 /* Form */
 .form-container {
-  margin-top: 30px
+  margin-top: 30px;
 }
 form {
   padding: 20px;
@@ -88,7 +127,7 @@ form input[type="datetime-local"] {
 }
 
 form button {
-  background-color: #00aaff;
+  background-color: #007bff;
   color: #fff;
   border: none;
   border-radius: 5px;
@@ -104,13 +143,30 @@ form button:hover {
   bottom: 10px;
   right: 20px;
 }
+#darkModeToggle:hover {
+  background-color: #0088cc;
+}
 
+/* Select an Event */
+select {
+  padding: 10px 0 10px 0;
+  text-align: center;
+  background-color: #007bff;
+  border-radius: 5px;
+  border: none;
+  color: white;
+  margin-top: 20px;
+}
 
+select:hover {
+  background-color: #0088cc;
+}
 /* dark mode */
 
-
-/* body darl elements */
-.dark-mode-body, .dark-mode-navbar, .dark-mode-time-unit   {
+/* body dark elements */
+.dark-mode-body,
+.dark-mode-navbar,
+.dark-mode-time-unit {
   transition: 0.5s;
 }
 .dark-mode-body {
@@ -132,17 +188,24 @@ form button:hover {
 }
 
 .dark-mode-body .share-button {
+  background-color: black;
+}
+
+/* Select Button */
+
+.dark-mode-body select {
+  background-color: black;
+}
+
+.dark-mode-body #timer {
   background-color: grey;
 }
-.dark-mode-body .share-button:hover {
-  background-color: rgb(85, 84, 84);
-}
+
 /* timer dark elements */
 
 .dark-mode-time-unit {
   background-color: black;
 }
-
 
 /* form dark elements */
 
@@ -153,9 +216,48 @@ form button:hover {
 .dark-mode-form > button {
   background-color: black;
 }
-
+.dark-mode-form > button:hover,
+.dark-mode-body .share-button:hover,
+.dark-mode-body select:hover,
+.dark-mode-body #darkModeToggle:hover {
+  background-color: rgb(95, 95, 95);
+}
 /* button to change themes */
 
 .dark-mode-body #darkModeToggle {
   background-color: black;
+}
+
+@media only screen and (max-width: 980px) {
+  .time-unit {
+    width: 70px;
+  }
+}
+
+@media only screen and (max-width: 750px) {
+  .time-unit {
+    flex: 1 1 calc(30% - 10px); /* Задает ширину каждого блока, учитывая отступ */
+    margin-bottom: 10px; /* Отступ между строками */
+    box-sizing: border-box; /* Включает паддинги и бордеры в размер блока */
+    text-align: center; /* Центрирует текст внутри блоков */
+    padding: 20px 10px; /* Внутренний отступ */
+  }
+
+  .navbar .nav-links a {
+    font-size: 12px;
+    padding: 10px 15px;
+  }
+
+  .navbar .share-button {
+    padding: 7px 15px;
+    font-size: 12px;
+    margin-right: 20px;
+  }
+
+  /* Select button */
+
+  select #darkModeToggle {
+    padding: 7px 0 7px 0;
+    width: 150px;
+  }
 }
