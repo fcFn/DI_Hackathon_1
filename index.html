@@ -26,5 +26,23 @@
     </div>
     <button id="darkModeToggle">Toggle Dark Mode</button>
     <script type="module" src="script.js"></script>
+    <script>
+      function getCurrentDateTime() {
+            const now = new Date();
+            const year = now.getFullYear();
+            const month = String(now.getMonth() + 1).padStart(2, '0');
+            const day = String(now.getDate()).padStart(2, '0');
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            
+            // Format the date and time as 'YYYY-MM-DDTHH:MM'
+            const formattedDateTime = `${year}-${month}-${day}T${hours}:${minutes}`;
+            return formattedDateTime;
+        }
+
+        // Set the min attribute of the datetime picker to the current date and time
+        const dateTimePicker = document.getElementById('eventDateInput');
+        dateTimePicker.min = getCurrentDateTime();
+    </script>
   </body>
 </html>
