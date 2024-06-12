@@ -169,8 +169,6 @@ const createTimeline = (
   const timeline = gsap.timeline({
     delay,
     onComplete() {
-      
-
       // Check if the previous unit has reached its rollOverValue
       // so that next unit only rolls over once per previous unit max value
       // i.e. minutes roll over once every 60 seconds
@@ -201,7 +199,7 @@ const createTimeline = (
         timeUnits.days.unit().textContent === "0" &&
         timeUnits.hours.unit().textContent === "0" &&
         timeUnits.minutes.unit().textContent === "0" &&
-        timeUnits.seconds.unit().textContent === "0" 
+        timeUnits.seconds.unit().textContent === "0"
       ) {
         document.removeEventListener("visibilitychange", onVisibilityChange);
         return gsap.globalTimeline.pause();
@@ -303,8 +301,11 @@ function createOptions([events, eventsNextYear]) {
   select.addEventListener("change", (event) => {
     const eventDate = DateTime.fromISO(`${event.target.value}`);
     addTimeToQuery(eventDate.toMillis());
+    document.querySelector("event-title").textContent =
+      event.target.selectedOptions[0].textContent;
     const eventDifference = getTimeDifference(DateTime.local(), eventDate);
     setupTimer(eventDifference);
+    addNameEventToQuery(event.target.selectedOptions[0].textContent);
     startBGTimer(eventDate.toMillis());
   });
   document.body.appendChild(select);
@@ -314,6 +315,8 @@ function setupTimer(eventDifference) {
   document.getElementById("timer")?.remove();
   createTimer();
   setTimeValues(eventDifference);
+  // TODO: Probably better to use gsap.globalTimeLine.clear() here instead of
+  //  iterating over this array
   if (timelines.length) {
     timelines.forEach((timeline) => timeline.kill());
   }
@@ -390,8 +393,19 @@ document.getElementById("eventForm").addEventListener("submit", (event) => {
   const eventDate = document.getElementById("eventDateInput").value;
   setEventName(eventName);
   setDateFromForm(eventDate);
+  addNameEventToQuery(eventName);
   document.getElementById("eventNameInput").value = "";
 });
+
+function addNameEventToQuery(eventName) {
+  const urlParams = new URLSearchParams(window.location.search);
+  urlParams.set("eventName", eventName);
+  window.history.replaceState(
+    {},
+    "",
+    `${window.location.pathname}?${urlParams}`,
+  );
+}
 
 // This is probably not the best way to do that, instead better stick with the add
 // event listener method
@@ -410,6 +424,15 @@ window.shareEvent = () => {
   }
 };
 
+function getEventNameFromURL() {
+  const urlParams = new URLSearchParams(window.location.search);
+  const eventName = urlParams.get("eventName");
+  if (!eventName) {
+    return "New Year 2025";
+  }
+  return eventName;
+}
+
 function getMillisFromURL() {
   const urlParams = new URLSearchParams(window.location.search);
   const eventDate = urlParams.get("time");
@@ -419,7 +442,6 @@ function getMillisFromURL() {
   return eventDate;
 }
 
-//hello
 // Entry point for the application
 Notification.requestPermission();
 let date =
@@ -428,6 +450,7 @@ let date =
   // TODO: Set label of the event to the default New Year
   // TODO: Do not use hardcoded 2025
   getTimeDifference(DateTime.local(), DateTime.fromISO("2025-01-01"));
-
+let eventName = getEventNameFromURL();
+setEventName(eventName);
 startBGTimer(getMillisFromURL());
 setupTimer(date);
