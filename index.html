@@ -7,42 +7,56 @@
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
-    </div>
     <div class="event-title">New Year 2025</div>
     <div>
-
       <div id="timer-container"></div>
-    <button class="share-button" id="shareButton">Share</button>
+      <button class="share-button" onclick="shareEvent()" id="shareButton">Share</button>
     </div>
     <div class="form-container">
       <form id="eventForm" action="#">
-        <!-- <h3>Set new Event</h3> -->
+        <h3>Set new countdown</h3>
         <label for="eventNameInput">Event Name:</label>
-        <input type="text" id="eventNameInput" required />
+        <input
+          type="text"
+          id="eventNameInput"
+          placeholder="Event name"
+          value="Event name"
+          required
+        />
         <label for="eventDateInput">Event Date:</label>
         <input type="datetime-local" id="eventDateInput" required />
         <button type="submit">Submit Event</button>
       </form>
     </div>
     <button id="darkModeToggle">Toggle Dark Mode</button>
-    <script type="module" src="script.js"></script>
     <script>
+      // Do not allow to set the event date and time in the past
       function getCurrentDateTime() {
-            const now = new Date();
-            const year = now.getFullYear();
-            const month = String(now.getMonth() + 1).padStart(2, '0');
-            const day = String(now.getDate()).padStart(2, '0');
-            const hours = String(now.getHours()).padStart(2, '0');
-            const minutes = String(now.getMinutes()).padStart(2, '0');
-            
-            // Format the date and time as 'YYYY-MM-DDTHH:MM'
-            const formattedDateTime = `${year}-${month}-${day}T${hours}:${minutes}`;
-            return formattedDateTime;
-        }
+        const now = new Date();
+        const year = now.getFullYear();
+        const month = String(now.getMonth() + 1).padStart(2, "0");
+        const day = String(now.getDate()).padStart(2, "0");
+        const hours = String(now.getHours()).padStart(2, "0");
+        const minutes = String(now.getMinutes()).padStart(2, "0");
 
-        // Set the min attribute of the datetime picker to the current date and time
-        const dateTimePicker = document.getElementById('eventDateInput');
+        // Format the date and time as 'YYYY-MM-DDTHH:MM'
+        const formattedDateTime = `${year}-${month}-${day}T${hours}:${minutes}`;
+        return formattedDateTime;
+      }
+
+      // Set the min attribute of the datetime picker to the current date and time
+      const dateTimePicker = document.getElementById("eventDateInput");
+      dateTimePicker.min = getCurrentDateTime();
+      setInterval(() => {
         dateTimePicker.min = getCurrentDateTime();
+      }, 60000);
     </script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/tsparticles-confetti/2.12.0/tsparticles.confetti.bundle.min.js"
+      integrity="sha512-3LobCjM2nQ9WclTbZY+5+IqLKwUTlBaUJTmGWdsIr7M6T5F/l25oIBNeITuef+mbD8PBvmuCF9fwXVn+PCT23Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    ></script>
+    <script type="module" src="script.js"></script>
   </body>
 </html>

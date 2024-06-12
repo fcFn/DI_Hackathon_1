@@ -12,7 +12,6 @@ function createTimer(millis) {
   };
   notificationTimer = setTimeout(() => {
     // TODO: show event name here
-    console.log("fooo");
     clearInterval(interval);
     if (Notification.permission === "granted") {
       self.postMessage('TIMES_UP')
