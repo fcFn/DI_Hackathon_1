@@ -38,6 +38,17 @@ export function startBGTimer(millis) {
   worker.onmessage = (event) => {
     if (event.data === "TIMES_UP") {
       document.title = "Time's up!";
+      if (Notification.permission === "granted") {
+        self.postMessage("TIMES_UP");
+        const notification = new Notification("Time's up!", {
+          body: "The time you set has elapsed.",
+        });
+        notification.onclick = (event) => {
+          event.preventDefault();
+          window.focus();
+          parent.focus();
+        };
+      }
       stopTimer();
     } else {
       updateTitle(event.data);
