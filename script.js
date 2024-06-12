@@ -399,7 +399,7 @@ function addTimeToQuery(time) {
   );
 }
 
-document.getElementById("darkModeToggle").addEventListener("click", () => {
+document.getElementById("darkModeToggle").addEventListener("change", () => {
   document.body.classList.toggle("dark-mode-body");
 
   const timeUnits = document.querySelectorAll(".time-unit");
@@ -483,8 +483,16 @@ function getMillisFromURL() {
   return eventDate;
 }
 
+document
+  .getElementById("notifyButton")
+  .addEventListener("click", () => Notification.requestPermission());
+
+document.querySelector('.event-title').addEventListener('input', (event) => {
+  const eventName = event.target.textContent;
+  addNameEventToQuery(eventName);
+})  
+
 // Entry point for the application
-Notification.requestPermission();
 let date =
   getTimeFromQuery() ||
   // New Year's Day 2025

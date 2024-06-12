@@ -10,14 +10,14 @@ function createTimer(millis) {
       }, 1000);
     }
   };
-  notificationTimer = setTimeout(() => {
-    // TODO: show event name here
-    clearInterval(interval);
-    if (Notification.permission === "granted") {
-      self.postMessage('TIMES_UP')
-      new Notification("Time's up!", { body: "The time you set has elapsed." });
-    }
-  }, millis - Date.now());
+  notificationTimer = setTimeout(
+    () => {
+      // TODO: show event name here
+      clearInterval(interval);
+      self.postMessage("TIMES_UP");
+    },
+    millis - 1000 - Date.now(),
+  );
   return timer;
 }
 

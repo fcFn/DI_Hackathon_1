@@ -5,12 +5,21 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Countdown Timer</title>
     <link rel="stylesheet" href="styles.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/theme-toggles@4.10.1/css/classic.min.css"
+    />
   </head>
   <body>
-    <div class="event-title">New Year 2025</div>
+    <div class="event-title" contenteditable>New Year 2025</div>
     <div>
       <div id="timer-container"></div>
-      <button class="share-button" onclick="shareEvent()" id="shareButton">Share</button>
+      <div class="buttons">
+        <button class="share-button" onclick="shareEvent()" id="shareButton">
+          Share
+        </button>
+        <button id="notifyButton">Enable notifications</button>
+      </div>
     </div>
     <div class="form-container">
       <form id="eventForm" action="#">
@@ -24,11 +33,42 @@
           required
         />
         <label for="eventDateInput">Event Date:</label>
+        <!-- FIX: Won't work in Firefox, see https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/datetime-local#browser_compatibility -->
         <input type="datetime-local" id="eventDateInput" required />
         <button type="submit">Submit Event</button>
       </form>
     </div>
-    <button id="darkModeToggle">Toggle Dark Mode</button>
+    <label class="theme-toggle theme-toggle--reversed" title="Toggle theme">
+      <input type="checkbox" id="darkModeToggle" checked />
+      <span class="theme-toggle-sr">Toggle theme</span>
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        aria-hidden="true"
+        width="3em"
+        height="3em"
+        fill="currentColor"
+        stroke-linecap="round"
+        class="theme-toggle__classic"
+        viewBox="0 0 32 32"
+      >
+        <clipPath id="theme-toggle__classic__cutout">
+          <path d="M0-5h30a1 1 0 0 0 9 13v24H0Z" />
+        </clipPath>
+        <g clip-path="url(#theme-toggle__classic__cutout)">
+          <circle cx="16" cy="16" r="9.34" />
+          <g stroke="currentColor" stroke-width="1.5">
+            <path d="M16 5.5v-4" />
+            <path d="M16 30.5v-4" />
+            <path d="M1.5 16h4" />
+            <path d="M26.5 16h4" />
+            <path d="m23.4 8.6 2.8-2.8" />
+            <path d="m5.7 26.3 2.9-2.9" />
+            <path d="m5.8 5.8 2.8 2.8" />
+            <path d="m23.4 23.4 2.9 2.9" />
+          </g>
+        </g>
+      </svg>
+    </label>
     <script>
       // Do not allow to set the event date and time in the past
       function getCurrentDateTime() {

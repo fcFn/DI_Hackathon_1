@@ -9,7 +9,8 @@ body {
   font-family: Arial, sans-serif;
 }
 
-.share-button {
+.share-button,
+#notifyButton {
   color: #fff;
   cursor: pointer;
   background-color: #007bff;
@@ -23,6 +24,10 @@ body {
   margin-top: 10px;
 }
 
+#notifyButton {
+  margin-left: 0;
+  margin-right: auto;
+}
 .share-button:hover {
   background-color: #0088cc;
 }
@@ -43,6 +48,11 @@ body {
   align-items: center;
   background: #f0f0f0;
   font-family: Arial, sans-serif;
+}
+.buttons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 20px;
 }
 
 #timer {
@@ -138,13 +148,10 @@ form button:hover {
   background-color: #0088cc;
 }
 
-#darkModeToggle {
+.theme-toggle {
   position: absolute;
   bottom: 10px;
   right: 20px;
-}
-#darkModeToggle:hover {
-  background-color: #0088cc;
 }
 
 /* Select an Event */
@@ -187,7 +194,8 @@ select:hover {
   background-color: grey;
 }
 
-.dark-mode-body .share-button {
+.dark-mode-body .share-button,
+.dark-mode-body #notifyButton {
   background-color: black;
 }
 
@@ -203,8 +211,25 @@ select:hover {
 
 /* timer dark elements */
 
-.dark-mode-time-unit {
+.dark-mode-body .time-unit {
   background-color: black;
+}
+.event-title:read-write {
+  cursor: pointer;
+}
+.event-title:focus {
+  outline: none;
+}
+.event-title:focus:hover::after {
+  content: "";
+}
+.event-title:hover::after {
+  content: "✏";
+  display: inline-block;
+  transform: rotate(120deg);
+  position: relative;
+  left: 10px;
+  color: #007bff;
 }
 
 /* form dark elements */
@@ -225,7 +250,7 @@ select:hover {
 /* button to change themes */
 
 .dark-mode-body #darkModeToggle {
-  background-color: black;
+  color: white;
 }
 
 @media only screen and (max-width: 980px) {
@@ -254,12 +279,14 @@ select:hover {
     margin-right: 20px;
   }
 
+  /* This probably doesn't work since the select element doesn't
+  contain an element with id darkModeToggle */
   /* Select button */
-
+  /* 
   select #darkModeToggle {
     padding: 7px 0 7px 0;
     width: 150px;
-  }
+  } */
 }
 /* 
 #confetti {
