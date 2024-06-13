@@ -14,10 +14,11 @@ function updateTitle(millis) {
   // Format the time difference and display in the title, do not include
   // units that are 0
   let timeString = "";
+  console.log(diff);
   if (diff.years) {
     timeString += `${diff.years}Y `;
   }
-  if (diff.monhts) {
+  if (diff.months) {
     timeString += `${diff.months}M `;
   }
   if (diff.days) {
