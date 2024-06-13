@@ -7,7 +7,6 @@ import { startBGTimer } from "./worker-helper.js";
 
 // Array to store the timelines for the timer
 const timelines = [];
-
 // Function to calculate the difference between two dates
 // and return it as an object with time components
 export function getTimeDifference(startDate, endDate) {
@@ -408,7 +407,9 @@ window.shareEvent = () => {
   } else {
     console.error("Web Share API not supported");
   }
-};
+}
+
+
 
 function getMillisFromURL() {
   const urlParams = new URLSearchParams(window.location.search);
