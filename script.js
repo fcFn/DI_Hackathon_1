@@ -336,7 +336,7 @@ function createOptions([events, eventsNextYear]) {
     const eventDate = DateTime.fromISO(`${event.target.value}`);
     targetDate = eventDate;
     addTimeToQuery(eventDate.toMillis());
-    document.querySelector("event-title").textContent =
+    document.querySelector(".event-title").textContent =
       event.target.selectedOptions[0].textContent;
     const eventDifference = getTimeDifference(DateTime.local(), eventDate);
     setupTimer(eventDifference);
