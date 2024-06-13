@@ -5,63 +5,25 @@ body {
   justify-content: center;
   align-items: center;
   flex-direction: column;
-  height: 100vh;
   background: #f0f0f0;
   font-family: Arial, sans-serif;
 }
 
-/* NavBar */
-
-#darkModeToggle {
-  padding: 10px 20px;
+.share-button {
+  color: #fff;
   cursor: pointer;
   background-color: #007bff;
-  color: #fff;
   border: none;
   border-radius: 5px;
-}
-
-.navbar {
-  background-color: #fff;
-  color: #333;
-  padding: 10px 0;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  position: fixed;
-  top: 0;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.navbar .nav-links {
-  display: flex;
-  justify-content: center;
-  flex-grow: 1;
-}
-
-.navbar .nav-links a {
-  color: #333;
-  padding: 14px 20px;
-  text-decoration: none;
-  display: inline-block;
-}
-
-.navbar .nav-links a:hover {
-  background-color: #f0f8ff;
-}
-
-.navbar .share-button {
+  margin-left: auto;
   padding: 10px 20px;
-  background-color: #007bff;
-  color: #fff;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
   font-size: 1em;
-  margin-right: 20px;
+  width: max-content;
+  display: block;
+  margin-top: 10px;
 }
 
-.navbar .share-button:hover {
+.share-button:hover {
   background-color: #0088cc;
 }
 
@@ -126,7 +88,7 @@ body {
 
 /* Form */
 .form-container {
-  margin-top: 30px
+  margin-top: 30px;
 }
 form {
   padding: 20px;
@@ -194,7 +156,6 @@ select {
   border: none;
   color: white;
   margin-top: 20px;
-  
 }
 
 select:hover {
@@ -202,9 +163,10 @@ select:hover {
 }
 /* dark mode */
 
-
 /* body dark elements */
-.dark-mode-body, .dark-mode-navbar, .dark-mode-time-unit   {
+.dark-mode-body,
+.dark-mode-navbar,
+.dark-mode-time-unit {
   transition: 0.5s;
 }
 .dark-mode-body {
@@ -232,7 +194,7 @@ select:hover {
 
 /* Select Button */
 
-.dark-mode-body  select {
+.dark-mode-body select {
   background-color: black;
 }
 
@@ -246,7 +208,6 @@ select:hover {
   background-color: black;
 }
 
-
 /* form dark elements */
 
 .dark-mode-form {
@@ -256,7 +217,10 @@ select:hover {
 .dark-mode-form > button {
   background-color: black;
 }
-.dark-mode-form > button:hover, .dark-mode-body .share-button:hover, .dark-mode-body  select:hover, .dark-mode-body #darkModeToggle:hover {
+.dark-mode-form > button:hover,
+.dark-mode-body .share-button:hover,
+.dark-mode-body select:hover,
+.dark-mode-body #darkModeToggle:hover {
   background-color: rgb(95, 95, 95);
 }
 /* button to change themes */
@@ -268,11 +232,8 @@ select:hover {
 @media only screen and (max-width: 980px) {
   .time-unit {
     width: 70px;
-   
   }
-  
 }
-
 
 @media only screen and (max-width: 750px) {
   .time-unit {
@@ -287,7 +248,7 @@ select:hover {
     font-size: 12px;
     padding: 10px 15px;
   }
-  
+
   .navbar .share-button {
     padding: 7px 15px;
     font-size: 12px;
@@ -296,8 +257,8 @@ select:hover {
 
   /* Select button */
 
-  /* select #darkModeToggle{
+  select #darkModeToggle {
     padding: 7px 0 7px 0;
     width: 150px;
-  } */
+  }
 }

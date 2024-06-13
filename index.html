@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
@@ -7,20 +7,20 @@
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
-    <div class="event-title">New Year 2025</div>
-
     </div>
-    <div id="timer-container"></div>
+    <div class="event-title">New Year 2025</div>
+    <div>
 
-      <button class="share-button" onclick="shareEvent()" id="shareButton">Share</button>
+      <div id="timer-container"></div>
+    <button class="share-button" id="shareButton">Share</button>
     </div>
     <div class="form-container">
       <form id="eventForm" action="#">
         <!-- <h3>Set new Event</h3> -->
         <label for="eventNameInput">Event Name:</label>
-        <input type="text" id="eventNameInput" required>
+        <input type="text" id="eventNameInput" required />
         <label for="eventDateInput">Event Date:</label>
-        <input type="datetime-local" id="eventDateInput" required>
+        <input type="datetime-local" id="eventDateInput" required />
         <button type="submit">Submit Event</button>
       </form>
     </div>
