@@ -1,12 +1,13 @@
 // Import DateTime and Duration from the Luxon library
 import gsap from "gsap";
 import { DateTime } from "luxon";
+import startParticles from "./confetti.js";
 import { events as builtInEvents } from "./events.js";
 import { determineCountryAndFetchHolidays } from "./geo.js";
 import { startBGTimer } from "./worker-helper.js";
-
 // Array to store the timelines for the timer
 const timelines = [];
+let targetDate = DateTime.fromISO("2025-01-01T00:00:00");
 // Function to calculate the difference between two dates
 // and return it as an object with time components
 export function getTimeDifference(startDate, endDate) {
@@ -200,8 +201,8 @@ const createTimeline = (
         timeUnits.minutes.unit().textContent === "0" &&
         timeUnits.seconds.unit().textContent === "0"
       ) {
-        document.removeEventListener("visibilitychange", onVisibilityChange);
-        return gsap.globalTimeline.pause();
+        stopTimer();
+        return;
       }
       // If the value of the target element is 0 and there is a next unit, create a new timeline for the next unit
       // But run the timeline only once since we only need it to do at most every 60 seconds
@@ -231,18 +232,52 @@ const createTimeline = (
   );
 };
 
+export function stopTimer() {
+  if (gsap.globalTimeline.paused()) {
+    return;
+  }
+  function startParticlesOnVisibilityChange() {
+    if (document.visibilityState === "visible") {
+      startParticles();
+      document.removeEventListener(
+        "visibilitychange",
+        startParticlesOnVisibilityChange,
+      );
+    }
+  }
+  function resetTimeUnits() {
+    Object.values(timeUnits).forEach((unit) => {
+      unit.unit().textContent = 0;
+    });
+  }
+
+  document.removeEventListener("visibilitychange", onVisibilityChange);
+
+  if (document.visibilityState === "visible") {
+    startParticles();
+  } else {
+    document.addEventListener(
+      "visibilitychange",
+      startParticlesOnVisibilityChange,
+    );
+  }
+  gsap.globalTimeline.pause(0);
+  resetTimeUnits();
+}
+
 // Add an event listener for the visibilitychange event
 // When the visibility of the document changes, call the onVisibilityChange function
 document.addEventListener("visibilitychange", onVisibilityChange);
 
 // Function to handle the visibilitychange event
-function onVisibilityChange(eventDifference) {
+function onVisibilityChange() {
   // If the visibility of the document is visible, update the timer
   if (document.visibilityState === "visible") {
     // Kill all the timelines
     timelines.forEach((timeline) => timeline.kill());
     // Update the time difference after being in background
-    const difference = date;
+    // UGLY!!! Really gotta get rid of that weird global date variable
+    const difference = getTimeDifference(DateTime.local(), targetDate);
     setupTimer(difference);
   }
 }
@@ -299,6 +334,7 @@ function createOptions([events, eventsNextYear]) {
   });
   select.addEventListener("change", (event) => {
     const eventDate = DateTime.fromISO(`${event.target.value}`);
+    targetDate = eventDate;
     addTimeToQuery(eventDate.toMillis());
     document.querySelector("event-title").textContent =
       event.target.selectedOptions[0].textContent;
@@ -310,6 +346,7 @@ function createOptions([events, eventsNextYear]) {
   document.body.appendChild(select);
 }
 function setupTimer(eventDifference) {
+  // TODO: Get rid of this stupid global variable that has cause so much trouble
   date = eventDifference;
   document.getElementById("timer")?.remove();
   createTimer();
@@ -378,10 +415,15 @@ function setEventName(eventName) {
   eventTitle.textContent = eventName;
 }
 
-function setDateFromForm(date) {
-  const eventDate = DateTime.fromISO(date);
+function setDateFromForm(formDate) {
+  const eventDate = DateTime.fromISO(formDate);
   addTimeToQuery(eventDate.toMillis());
-  const eventDifference = getTimeDifference(DateTime.local(), eventDate);
+  const eventDifference = getTimeDifference(
+    DateTime.local(),
+    eventDate.plus({ seconds: 1 }),
+  );
+  targetDate = eventDate.plus({ seconds: 1 });
+  date = eventDifference;
   setupTimer(eventDifference);
   startBGTimer(eventDate.toMillis());
 }
@@ -393,7 +435,7 @@ document.getElementById("eventForm").addEventListener("submit", (event) => {
   setEventName(eventName);
   setDateFromForm(eventDate);
   addNameEventToQuery(eventName);
-  document.getElementById("eventNameInput").value = "";
+  document.getElementById("eventNameInput").value = "Event name";
 });
 
 function addNameEventToQuery(eventName) {

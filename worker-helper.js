@@ -1,11 +1,14 @@
 import { DateTime } from "luxon";
-import { getTimeDifference } from "./script.js";
+import { getTimeDifference, stopTimer } from "./script.js";
 
 // import worker from "./worker.js";
 const worker = new Worker(new URL("./worker.js", import.meta.url));
 
 function updateTitle(millis) {
-  const diff = getTimeDifference(DateTime.local(), DateTime.fromMillis(parseInt(millis)));
+  const diff = getTimeDifference(
+    DateTime.local(),
+    DateTime.fromMillis(parseInt(millis)),
+  );
   // Format the time difference and display in the title, do not include
   // units that are 0
   let timeString = "";
@@ -25,7 +28,7 @@ function updateTitle(millis) {
     timeString += `${diff.minutes}m `;
   }
   if (diff.seconds) {
-    timeString += `${Math.floor(diff.seconds)}s `;
+    timeString += `${diff.seconds.toFixed(0) === 60 ? 59 : diff.seconds.toFixed(0)}s `;
   }
   document.title = timeString;
 }
@@ -35,6 +38,7 @@ export function startBGTimer(millis) {
   worker.onmessage = (event) => {
     if (event.data === "TIMES_UP") {
       document.title = "Time's up!";
+      stopTimer();
     } else {
       updateTitle(event.data);
     }
