@@ -323,8 +323,12 @@ function createOptions([events, eventsNextYear]) {
       date = eventsNextYear.find(
         (eventNextYear) => eventNextYear.name === event.name,
       );
-      optionName = `${date.name} (${date.date.iso})`;
-      date = DateTime.fromISO(`${date.date.iso}T00:00:00`);
+      if (date) {
+        optionName = `${date.name} (${date.date.iso})`;
+        date = DateTime.fromISO(`${date.date.iso}T00:00:00`);
+      } else {
+        return;
+      }
     }
 
     const option = document.createElement("option");
@@ -489,10 +493,10 @@ document
   .getElementById("notifyButton")
   .addEventListener("click", () => Notification.requestPermission());
 
-document.querySelector('.event-title').addEventListener('input', (event) => {
+document.querySelector(".event-title").addEventListener("input", (event) => {
   const eventName = event.target.textContent;
   addNameEventToQuery(eventName);
-})  
+});
 
 // Entry point for the application
 let date =
