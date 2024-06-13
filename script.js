@@ -324,8 +324,8 @@ function createOptions([events, eventsNextYear]) {
         (eventNextYear) => eventNextYear.name === event.name,
       );
       if (date) {
-      optionName = `${date.name} (${date.date.iso})`;
-      date = DateTime.fromISO(`${date.date.iso}T00:00:00`);
+        optionName = `${date.name} (${date.date.iso})`;
+        date = DateTime.fromISO(`${date.date.iso}T00:00:00`);
       } else {
         return;
       }
