@@ -323,8 +323,12 @@ function createOptions([events, eventsNextYear]) {
       date = eventsNextYear.find(
         (eventNextYear) => eventNextYear.name === event.name,
       );
+      if (date) {
       optionName = `${date.name} (${date.date.iso})`;
       date = DateTime.fromISO(`${date.date.iso}T00:00:00`);
+      } else {
+        return;
+      }
     }
 
     const option = document.createElement("option");
