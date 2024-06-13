@@ -4,7 +4,7 @@ let interval;
 let notificationTimer;
 function createTimer(millis) {
   clearInterval(interval);
-  clearTimeout(notificationTimer.timeout);
+  clearTimeout(notificationTimer?.timeout);
   const timer = () => {
     if (Date.now() <= millis) {
       interval = setInterval(() => {
