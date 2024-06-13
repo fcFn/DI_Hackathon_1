@@ -487,10 +487,10 @@ document
   .getElementById("notifyButton")
   .addEventListener("click", () => Notification.requestPermission());
 
-document.querySelector('.event-title').addEventListener('input', (event) => {
+document.querySelector(".event-title").addEventListener("input", (event) => {
   const eventName = event.target.textContent;
   addNameEventToQuery(eventName);
-})  
+});
 
 // Entry point for the application
 let date =
