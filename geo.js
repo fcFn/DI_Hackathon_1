@@ -34,41 +34,33 @@ const fetchHolidays = async (country, year) => {
 // Function to get the user's current location, determine the country, and fetch holidays
 const determineCountryAndFetchHolidays = async (year, callback) => {
   if (navigator.geolocation) {
-    navigator.geolocation.getCurrentPosition(
-      async (position) => {
-        const { latitude, longitude } = position.coords;
-        try {
-          const country = await fetchCountryFromCoordinates(
-            latitude,
-            longitude,
-          );
+    try {
+      const position = await new Promise((resolve, reject) =>
+        navigator.geolocation.getCurrentPosition(resolve, reject),
+      );
 
-          if (country) {
-            // TODO: Probably better to run it sequentially since
-            //   or otherwise check which year we got first
-            const holidays = await Promise.all([
-              fetchHolidays(country, year),
-              fetchHolidays(country, year + 1),
-            ]).catch((error) => {
-              // I'm not sure this is needed
-              throw error;
-            });
-            return callback(holidays);
-          } else {
-            throw new Error("Could not determine country.");
-            console.error("Could not determine country.");
-          }
-        } catch (error) {
-          console.error(
-            "Error determining country or fetching holidays:",
-            error,
-          );
-        }
-      },
-      (error) => {
-        console.error("Error getting location:", error);
-      },
-    );
+      const { latitude, longitude } = position.coords;
+
+      const country = await fetchCountryFromCoordinates(latitude, longitude);
+
+      if (country) {
+        // TODO: Probably better to run it sequentially since
+        //   or otherwise check which year we got first
+        const holidays = await Promise.all([
+          fetchHolidays(country, year),
+          fetchHolidays(country, year + 1),
+        ]).catch((error) => {
+          // I'm not sure this is needed
+          throw error;
+        });
+        return callback(holidays);
+      } else {
+        throw new Error("Could not determine country.");
+        console.error("Could not determine country.");
+      }
+    } catch (error) {
+      console.error("Error determining country or fetching holidays:", error);
+    }
   } else {
     console.error("Geolocation is not supported by this browser.");
   }
