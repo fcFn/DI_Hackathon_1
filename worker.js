@@ -1,8 +1,10 @@
+import setLongTimeout from "./helpers";
+
 let interval;
 let notificationTimer;
 function createTimer(millis) {
   clearInterval(interval);
-  clearTimeout(notificationTimer);
+  clearTimeout(notificationTimer.timeout);
   const timer = () => {
     if (Date.now() <= millis) {
       interval = setInterval(() => {
@@ -10,14 +12,11 @@ function createTimer(millis) {
       }, 1000);
     }
   };
-  notificationTimer = setTimeout(
-    () => {
-      // TODO: show event name here
-      clearInterval(interval);
-      self.postMessage("TIMES_UP");
-    },
-    millis - 1000 - Date.now(),
-  );
+  setLongTimeout(() => {
+    // TODO: show event name here
+    clearInterval(interval);
+    self.postMessage("TIMES_UP");
+  }, millis - 1000 - Date.now(), notificationTimer)
   return timer;
 }
 

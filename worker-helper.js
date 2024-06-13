@@ -2,7 +2,9 @@ import { DateTime } from "luxon";
 import { getTimeDifference, stopTimer } from "./script.js";
 
 // import worker from "./worker.js";
-const worker = new Worker(new URL("./worker.js", import.meta.url));
+const worker = new Worker(new URL("./worker.js", import.meta.url), {
+  type: "module",
+});
 
 function updateTitle(millis) {
   const diff = getTimeDifference(
