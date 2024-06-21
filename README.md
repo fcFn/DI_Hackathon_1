@@ -44,7 +44,7 @@ To deploy Event Countdown, you need to build the project and serve the generated
 ### Environment Variables
 To enable the feature that determines national holidays based on your location, you need to configure two environment variables: `OPENCAGE_APIKEY` and `CALENDARIFIC_APIKEY`. These API keys are used to access external services:
 
-1. **OPENCAGE_APIKEY**: This key is used to access the OpenCage Geocoding API, which converts location names into geographic coordinates (latitude and longitude). This is useful for determining your exact location based on the name you provide.
+1. **OPENCAGE_APIKEY**: This key is used to access the OpenCage Geocoding API, which converts geographic coordinates (latitude and longitude) into a country name (reverse geocoding). It's then used to get a list of national holidays in your country.
 
 2. **CALENDARIFIC_APIKEY**: This key is used to access the Calendarific API, which provides information about national holidays for a given country. This allows the application to display relevant holidays based on your location.
 
